@@ -67,8 +67,21 @@ function randomChoice() {
   return choiceByIndex(randomChoiceIndex())
 }
 
+function clearHandIcons() {
+  choices.forEach(choice => {
+    document.getElementById(`icon-${choice.name.toLowerCase()}`).style.color = 'black'
+  })
+}
+
+function drawHandIcons(userChoice) {
+  clearHandIcons()
+  document.getElementById(`icon-${userChoice.name.toLowerCase()}`).style.color = '#12db0b'
+}
+
 function drawChoices(userChoice) {
   let computerChoice = randomChoice()
+
+  drawHandIcons(userChoice)
 
   document.getElementById('computer-choice').src = computerChoice.imageUrl
 }
@@ -77,22 +90,35 @@ function play(choice) {
   drawChoices(choiceByName(choice))
 }
 
-async function drawBrain() {
+function drawBrain() {
   let brain = document.getElementById('brain');
   let opacity = 0.00;
   let scale = 1.00;
+  let dimBrain = false;
 
-  var id = setInterval(await frame, 23);
+  var id = setInterval(frame, 23);
 
   brain.style.visibility = 'visible'
-  async function frame() {
-    if (scale >= 2.00) {
+  function frame() {
+    if (scale >= 2.250) {
       clearInterval(id);
       brain.style.visibility = 'hidden'
       brain.style.transform = 'scale(1)'
       brain.style.opacity = '0.00'
+      play(randomChoice().name)
     } else {
-      opacity += 0.05;
+
+      if (!dimBrain) {
+        opacity += 0.05
+        if (opacity >= 1) {
+          dimBrain = true
+        }
+      } else {
+        opacity -= 0.08
+      }
+
+      // console.log(`opacity: ${opacity}`)
+      // opacity += 0.05;
       scale += 0.05;
       brain.style.transform = `scale(${scale})`
       brain.style.opacity = `${opacity}`;
@@ -100,8 +126,7 @@ async function drawBrain() {
   }
 }
 
-async function playRandom() {
-  await drawBrain()
-  play(randomChoice().name)
+function playRandom() {
+  drawBrain()
 }
 
