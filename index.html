@@ -15,7 +15,7 @@
 	<!--write html below this line-->
 	<div class="container">
 		<div class="row justify-content-center">
-			<div id="human-col" class="col">
+			<div id="human-col" class="col order-2 order-sm-1 justify-content-center">
 				<div class="player-container">
 					<img class="head" src="images/head-outline.png" alt="">
 					<img id="brain" class="brain" src="images/brain.png" alt="">
@@ -33,14 +33,17 @@
 						</div>
 					</div>
 				</div>
+				<div id="human-score" class="score">Human</div>
 			</div>
-			<div id="computer-col" class="col">
+			<div id="computer-col" class="col order-1 order-sm-2">
 				<div class="player-container">
 					<img src="images/ols-computer.png" alt="">
 					<img id="computer-choice" class="computer-choice" src="images/rock.png" alt="">
 				</div>
+				<div id="computer-score" class="score">Computer</div>
 			</div>
 		</div>
+		<div id="game-status" class="row"></div>
 	</div>
 
 	<!--write html above this line-->

@@ -3,16 +3,18 @@
 }
 
 .player-container {
-  /* border: solid blueviolet 1px; */
+  border: solid blueviolet 1px;
   padding: 10px;
 
   position: relative;
   height: var(--player-size);
   width: var(--player-size);
+
+  /* transform: scale(3.0) */
 }
 
 .head {
-  /* border: solid fuchsia 1px; */
+  border: solid fuchsia 1px;
 
   position: absolute;
   top: 50%;
@@ -27,7 +29,7 @@
 }
 
 .thought {
-  /* border: solid salmon 1px; */
+  border: solid salmon 1px;
 
   position: absolute;
   top: 0px;
@@ -41,7 +43,7 @@
 
 .choices {
   
-  /* border: solid salmon 1px; */
+  border: solid salmon 1px;
 
   position: absolute;
   top: 0px;
@@ -94,7 +96,8 @@
 }
 
 .col {
-  /* border: solid salmon 1px; */
+  border: solid salmon 1px;
+  width: var(--player-size);
 }
 
 .i {
@@ -107,4 +110,9 @@
 }
 .question {
   margin-left: -25px;
+}
+.score {
+  font-family: monospace;
+  font-size: 2em;
+  text-align: center;
 }

@@ -1,4 +1,8 @@
 let choiceIndex = 0;
+let humanScore = 0;
+let computerScore = 0;
+let gameStatus = 'Begin'
+let firstRound = true;
 
 class Choice {
   constructor(name, imageName) {
@@ -78,12 +82,45 @@ function drawHandIcons(userChoice) {
   document.getElementById(`icon-${userChoice.name.toLowerCase()}`).style.color = '#12db0b'
 }
 
-function drawChoices(userChoice) {
+function setScore(humanChoice, computerChoice) {
+  if (firstRound) {
+    gameStatus = 'Begin'
+  } else if (humanChoice.name === computerChoice.name) {
+    gameStatus = "It's a tie"
+  } else if (humanChoice.isBeatBy(computerChoice.name)) {
+    gameStatus = 'Computer'
+    computerScore++
+  } else {
+    gameStatus = 'Human'
+    humanScore++
+  }
+}
+
+function drawScores() {
+  document.getElementById('game-status').textContent = gameStatus
+  document.getElementById('human-score').textContent = `Human ${humanScore}`
+  document.getElementById('computer-score').textContent = `Computer ${computerScore}`
+}
+
+function resetGame() {
+  gameStatus = 'Begin'
+  firstRound = true
+  humanScore = 0;
+  computerScore = 0;
+}
+
+function drawChoices(humanChoice) {
   let computerChoice = randomChoice()
 
-  drawHandIcons(userChoice)
+  setScore(humanChoice, computerChoice)
+
+  drawScores()
+
+  drawHandIcons(humanChoice)
 
   document.getElementById('computer-choice').src = computerChoice.imageUrl
+
+  firstRound = false
 }
 
 function play(choice) {
