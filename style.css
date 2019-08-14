@@ -1,0 +1,110 @@
+:root {
+  --player-size: 300px;
+}
+
+.player-container {
+  /* border: solid blueviolet 1px; */
+  padding: 10px;
+
+  position: relative;
+  height: var(--player-size);
+  width: var(--player-size);
+}
+
+.head {
+  /* border: solid fuchsia 1px; */
+
+  position: absolute;
+  top: 50%;
+  left: 0;
+  bottom: 0;
+  right: 50%;
+
+  width: auto;
+  height: 50%;
+
+  z-index: 1;
+}
+
+.thought {
+  /* border: solid salmon 1px; */
+
+  position: absolute;
+  top: 0px;
+  height: 55%;
+  width: 80%;
+
+  right: 0px;
+
+  z-index: 2;
+}
+
+.choices {
+  
+  /* border: solid salmon 1px; */
+
+  position: absolute;
+  top: 0px;
+  height: 55%;
+  width: 80%;
+
+  right: 0px;
+
+  z-index: 3;
+}
+
+.computer-choice {
+  position: absolute;
+  top: 15%;
+  height: 20%;
+  width: auto;
+  left: 33%;
+
+  z-index: -1;
+}
+
+.computer {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: auto;
+  height: 100%;
+  z-index: 15;
+}
+
+.row {
+  /* border: solid black 1px; */
+  margin-top: 10%;
+}
+
+.brain {
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  bottom: 0;
+
+  top: 55%;
+
+  width: auto;
+  height: 25%;
+
+  z-index: 4;
+
+  visibility: hidden;
+}
+
+.col {
+  /* border: solid salmon 1px; */
+}
+
+.i {
+  font-size: 2em;
+  cursor: pointer;
+}
+.center {
+  margin-left: 15px;
+  margin-right: 15px;
+}
+.question {
+  margin-left: -25px;
+}
