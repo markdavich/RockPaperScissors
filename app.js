@@ -1,14 +1,33 @@
-let choiceIndex = 0;
+let _choiceId = -1;
 let humanScore = 0;
 let computerScore = 0;
 let gameStatus = 'Begin'
 let firstRound = true;
 
+const BLANK_IMAGE = 'images/blank.png'
+const PLAYER = {
+  COMPUTER: {
+
+  },
+  PLAYER: {
+
+  }
+}
+const CHOICE_NAMES = {
+  PAPER: 'paper',
+  SCISSORS: 'scissors',
+  ROCK: 'rock'
+}
+
+function properCase(str) {
+  return [...str][0].toUpperCase() + [...str].slice(1)
+}
+
 class Choice {
-  constructor(name, imageName) {
-    this._id = choiceIndex++;
+  constructor(name) {
+    this._id = _choiceId++;
     this._name = name;
-    this._imageUrl = `images/${imageName}.png`;
+    this._imageUrl = `images/${name}.png`;
   }
   get id() {
     return this._id
@@ -21,12 +40,12 @@ class Choice {
   }
   isBeatBy(choice) {
     switch (this._name) {
-      case 'Rock':
-        return choice === 'Paper'
-      case 'Paper':
-        return choice === 'Scissors'
-      case 'Scissors':
-        return choice === 'Rock'
+      case CHOICE_NAMES.ROCK:
+        return choice === 'paper'
+      case CHOICE_NAMES.PAPER:
+        return choice === 'scissors'
+      case CHOICE_NAMES.SCISSORS:
+        return choice === 'rock'
     }
   }
   isTie(choice) {
@@ -36,16 +55,17 @@ class Choice {
 
 let choices = [];
 
-choices.push(new Choice('Rock', 'rock'))
-choices.push(new Choice('Paper', 'paper'))
-choices.push(new Choice('Scissors', 'scissors'))
+let resetChoice = new Choice('blank')
+
+choices.push(new Choice(CHOICE_NAMES.PAPER))
+choices.push(new Choice(CHOICE_NAMES.SCISSORS))
+choices.push(new Choice(CHOICE_NAMES.ROCK))
 
 function randomChoiceIndex() {
   let i = Math.floor(Math.random() * choices.length)
-  // debugger
+  console.log(i)
   return i
 }
-
 
 function choiceByIndex(index) {
   let result;
@@ -60,7 +80,7 @@ function choiceByIndex(index) {
 function choiceByName(name) {
   let result;
   choices.forEach(choice => {
-    if (choice.name.toLowerCase() === name.toLowerCase()) {
+    if (choice.name === name) {
       result = choice
     }
   })
@@ -68,17 +88,18 @@ function choiceByName(name) {
 }
 
 function randomChoice() {
-  return choiceByIndex(randomChoiceIndex())
+  let choice = choiceByIndex(randomChoiceIndex())
+  return choice
 }
 
-function clearHandIcons() {
+function resetHandIcons() {
   choices.forEach(choice => {
     document.getElementById(`icon-${choice.name.toLowerCase()}`).style.color = 'black'
   })
 }
 
 function drawHandIcons(userChoice) {
-  clearHandIcons()
+  resetHandIcons()
   document.getElementById(`icon-${userChoice.name.toLowerCase()}`).style.color = '#12db0b'
 }
 
@@ -102,11 +123,74 @@ function drawScores() {
   document.getElementById('computer-score').textContent = `Computer ${computerScore}`
 }
 
+function resetComputerChoiceImage() {
+  drawComputerChoice(resetChoice)
+}
+
 function resetGame() {
   gameStatus = 'Begin'
   firstRound = true
   humanScore = 0;
   computerScore = 0;
+  resetComputerChoiceImage();
+  resetHandIcons()
+  drawScores()
+}
+
+function dimElement(element, callBack) {
+  let id = setInterval(frame, 10);
+  let opacity = 1;
+
+  function frame() {
+    if (opacity <= 0) {
+      clearInterval(id);
+      callBack()
+    } else {
+      opacity -= 0.05
+      element.style.opacity = `${opacity}`;
+    }
+  }
+}
+
+function brightenElement(element, callBack) {
+  let id = setInterval(frame, 10);
+  let opacity = 0;
+
+  function frame() {
+    if (opacity >= 1) {
+      clearInterval(id);
+      callBack()
+    } else {
+      opacity += 0.05
+      element.style.opacity = `${opacity}`;
+    }
+  }
+}
+
+function drawComputerChoice(computerChoice) {
+  let computerImage = document.getElementById('computer-choice')
+
+  dimElement(computerImage, () => {
+    computerImage.classList.remove(
+      CHOICE_NAMES.PAPER,
+      CHOICE_NAMES.SCISSORS,
+      CHOICE_NAMES.ROCK
+    )
+
+    computerImage.classList.add(computerChoice.name)
+    computerImage.src = computerChoice.imageUrl
+
+    brightenElement(computerImage, () => { })
+  })
+
+  // computerImage.scr = ''
+
+
+
+
+
+
+
 }
 
 function drawChoices(humanChoice) {
@@ -118,7 +202,7 @@ function drawChoices(humanChoice) {
 
   drawHandIcons(humanChoice)
 
-  document.getElementById('computer-choice').src = computerChoice.imageUrl
+  drawComputerChoice(computerChoice)
 
   firstRound = false
 }
@@ -166,4 +250,6 @@ function drawBrain() {
 function playRandom() {
   drawBrain()
 }
+
+resetGame()
 

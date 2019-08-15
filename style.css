@@ -10,6 +10,8 @@
   height: var(--player-size);
   width: var(--player-size);
 
+  margin: auto;
+
   /* transform: scale(3.0) */
 }
 
@@ -55,14 +57,32 @@
   z-index: 3;
 }
 
+
+
 .computer-choice {
   position: absolute;
   top: 15%;
   height: 20%;
   width: auto;
-  left: 33%;
+  left: 40%;
 
   z-index: -1;
+}
+
+.paper {
+  height: 20%;
+  left: 43%;
+}
+
+.scissors {
+  top: 17%;
+  height: 17%;
+  left: 39%;
+}
+
+.rock {
+  height: 20%;
+  left: 40%
 }
 
 .computer {
@@ -75,7 +95,7 @@
 }
 
 .row {
-  /* border: solid black 1px; */
+  border: solid black 1px;
   margin-top: 10%;
 }
 
@@ -97,7 +117,8 @@
 
 .col {
   border: solid salmon 1px;
-  width: var(--player-size);
+  width: var(--player-size) !important;
+  text-align: center;
 }
 
 .i {
@@ -115,4 +136,20 @@
   font-family: monospace;
   font-size: 2em;
   text-align: center;
+}
+.game-status {
+  border: solid salmon 1px;
+  margin: auto;
+  display: inline-block;
+  font-family: monospace;
+  font-size: 3em;
+  align-self: center;
+}
+
+.won {
+  border: solid blue 1px;
+  height: 25px;
+  color: red;
+  text-align: center;
+  display: inline-block;
 }
