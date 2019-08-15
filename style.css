@@ -1,9 +1,10 @@
 :root {
   --player-size: 300px;
+  --win-border: rgba(66, 66, 66, 0.719);
 }
 
 .player-container {
-  border: solid blueviolet 1px;
+  /* border: solid blueviolet 1px; */
   padding: 10px;
 
   position: relative;
@@ -16,7 +17,7 @@
 }
 
 .head {
-  border: solid fuchsia 1px;
+  /* border: solid rgb(243, 220, 243) 1px; */
 
   position: absolute;
   top: 50%;
@@ -31,7 +32,7 @@
 }
 
 .thought {
-  border: solid salmon 1px;
+  /* border: solid salmon 1px; */
 
   position: absolute;
   top: 0px;
@@ -45,7 +46,7 @@
 
 .choices {
   
-  border: solid salmon 1px;
+  /* border: solid salmon 1px; */
 
   position: absolute;
   top: 0px;
@@ -95,7 +96,7 @@
 }
 
 .row {
-  border: solid black 1px;
+  /* border: solid black 1px; */
   margin-top: 10%;
 }
 
@@ -116,7 +117,7 @@
 }
 
 .col {
-  border: solid salmon 1px;
+  /* border: solid salmon 1px; */
   width: var(--player-size) !important;
   text-align: center;
 }
@@ -133,12 +134,13 @@
   margin-left: -25px;
 }
 .score {
+  margin-top: 10px;
   font-family: monospace;
   font-size: 2em;
   text-align: center;
 }
 .game-status {
-  border: solid salmon 1px;
+  /* border: solid salmon 1px; */
   border-radius: 23px;
   padding-left: 10px;
   padding-right: 10px;
@@ -153,8 +155,9 @@
 }
 
 .won {
-  border: solid blue 1px;
-  height: 25px;
+  /* border: solid blue 1px; */
+  margin-top: 5px;
+  height: 15px;
   color: red;
   text-align: center;
   display: inline-block;
@@ -162,8 +165,15 @@
 
 .token {
   display: inline-block;
-  width: 25px;
+  width: 15px;
   height: 100%;
   border-radius: 50%;
   background-color: rgb(0, 124, 226);
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.win-border {
+  border: solid var(--win-border) 2px;
+  border-radius: 8px;
 }

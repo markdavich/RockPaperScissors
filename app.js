@@ -1,17 +1,15 @@
 let _choiceId = -1;
 let humanScore = 0;
 let computerScore = 0;
+let computerWins = 0
+let humanWis = 0
 let gameStatus = 'Begin'
 let firstRound = true;
 
 const BLANK_IMAGE = 'images/blank.png'
-const PLAYER = {
-  COMPUTER: {
-
-  },
-  PLAYER: {
-
-  }
+let PLAYER = {
+  COMPUTER: 'computer',
+  HUMAN: 'human'
 }
 const CHOICE_NAMES = {
   PAPER: 'paper',
@@ -100,7 +98,10 @@ function resetHandIcons() {
 
 function drawHandIcons(userChoice) {
   resetHandIcons()
-  document.getElementById(`icon-${userChoice.name.toLowerCase()}`).style.color = '#12db0b'
+
+  if (!(userChoice.name === 'blank')) {
+    document.getElementById(`icon-${userChoice.name.toLowerCase()}`).style.color = '#12db0b'
+  }
 }
 
 function setScore(humanChoice, computerChoice) {
@@ -134,7 +135,6 @@ function resetGame() {
   computerScore = 0;
   resetComputerChoiceImage();
   resetHandIcons()
-  drawScores()
 }
 
 function dimElement(element, callBack) {
@@ -180,23 +180,54 @@ function cloneElementToViewPort(element, ) {
 }
 
 function interpolate(x1, x2, y1, y2, y) {
-  let x = (y - y1) * (x2 - x1) / (y2 - y1)
+  let x = (y - y1) * (x2 - x1) / (y2 - y1) + x1
+  return x
   return Math.floor(x)
 }
 
 function createToken(player) {
   let token = document.createElement('div');
   token.classList.add('token')
-  // token.style.opacity = '0'
+  token.style.opacity = '0'
   document.getElementById(`${player}-won-games`).appendChild(token)
   return token
+}
+
+function drawBorderHighlight(winner) {
+  let looser
+  let isAhead
+
+  switch (winner) {
+    case PLAYER.COMPUTER:
+      computerWins++
+      looser = PLAYER.HUMAN
+      isAhead = computerWins > humanWis
+      break
+    default:
+      humanWis++
+      looser = PLAYER.COMPUTER
+      isAhead = humanWis > computerWins
+  }
+
+  let leader = document.getElementById(`${winner}-score`)
+  let trailer = document.getElementById(`${looser}-score`)
+
+  trailer.classList.remove('win-border')
+  leader.classList.remove('win-border')
+
+  if (computerWins != humanWis) {
+    if (isAhead) {
+      leader.classList.add('win-border')
+    } else {
+      trailer.classList.add('win-border')
+    }
+  }
 }
 
 function drawWinner(player) {
   let gameStatus = document.getElementById('game-status')
   let winingElement = cloneElementToViewPort(gameStatus)
-  let token = createToken('computer')
-  let tokenRect = token.getBoundingClientRect()
+  let token = createToken(player)
 
   gameStatus.style.color = 'rgb(0, 0, 0, 0)'
 
@@ -204,46 +235,26 @@ function drawWinner(player) {
   let blur = 1;
   let offset = 1;
   let pause = 0
-  let direction = 1
-  let moveVariablesSet = false
-  let left, l, t, s, o, b
-  let top = winingElement.offsetTop;
+  let top
+  let opacity = 0
 
   let upId = setInterval(() => {
     if (scale >= 2) {
+      clearInterval(upId);
       let pauseId = setInterval(() => {
         pause++
-        if (pause >= 1000) {
-          if (!moveVariablesSet) {
-            left = winingElement.offsetLeft;
-            l = left
-            t = winingElement.offsetHeight
-            s = scale
-            o = offset
-            b = blur
-            if (tokenRect.left < left) {
-              direction = -1
-            }
-            moveVariablesSet = true
-          }
-          let moveId = setInterval(() => {
-            if (left >= tokenRect.left) {
-              clearInterval(moveId)
-              clearInterval(upId);
-              clearInterval(pauseId);
-              gameStatus.style.color = 'rgb(0, 0, 0, 1)'
-              gameStatus.innerText = 'Begin'
+        if (pause >= 10) {
+          clearInterval(pauseId)
+          let createId = setInterval(() => {
+            if (opacity >= 1) {
+              clearInterval(createId)
               winingElement.remove()
+              drawBorderHighlight(player)
+              gameStatus.style.color = 'rgb(0, 0, 0, 1)'
             } else {
-              left = left + direction
-              top = interpolate(t, token.offsetTop, l, tokenRect.left, left)
-              scale = interpolate(s, 0, l, tokenRect.left, left)
-              offset = interpolate(o, 0, l, tokenRect.left, left)
-              blur = interpolate(b, 0, l, tokenRect.left, left)
-              winingElement.style.left = `${left}`
-              winingElement.style.top = `${top}px`
-              winingElement.style.transform = `scale(${scale})`
-              winingElement.style.boxShadow = `${offset}px ${offset}px ${blur}px black`
+              opacity += 0.05
+              token.style.opacity = `${opacity}`
+              winingElement.style.opacity = `${1 - opacity}`
             }
           }, 23)
         }
@@ -254,8 +265,6 @@ function drawWinner(player) {
       blur = interpolate(1, 20, 1, 2, scale)
       offset = interpolate(1, 10, 1, 2, scale)
 
-      // gameStatus.style.opacity = `${opacity}`
-      // gameStatus.style.transform = `scale(${opacity})`
       winingElement.style.top = `${top}px`
       winingElement.style.transform = `scale(${scale})`
       winingElement.style.boxShadow = `${offset}px ${offset}px ${blur}px black`
@@ -295,12 +304,28 @@ function drawComputerChoice(computerChoice) {
   })
 }
 
+function checkForWin() {
+  if (!(computerScore === 3 || humanScore === 3)) {
+    return
+  }
+
+  if (humanScore === 3) {
+    drawWinner(PLAYER.HUMAN)
+  } else {
+    drawWinner(PLAYER.COMPUTER)
+  }
+
+  resetGame()
+}
+
 function drawChoices(humanChoice) {
   let computerChoice = randomChoice()
 
   setScore(humanChoice, computerChoice)
 
   drawScores()
+
+  checkForWin()
 
   drawHandIcons(humanChoice)
 
@@ -354,4 +379,5 @@ function playRandom() {
 }
 
 resetGame()
+drawChoices(resetChoice)
 
