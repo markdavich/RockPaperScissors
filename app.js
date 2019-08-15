@@ -205,7 +205,8 @@ function drawWinner(player) {
   let offset = 1;
   let pause = 0
   let direction = 1
-
+  let moveVariablesSet = false
+  let left, l, t, s, o, b
   let top = winingElement.offsetTop;
 
   let upId = setInterval(() => {
@@ -213,17 +214,20 @@ function drawWinner(player) {
       let pauseId = setInterval(() => {
         pause++
         if (pause >= 1000) {
-          let left = winingElement.offsetLeft;
-          let l = left
-          let t = winingElement.offsetHeight
-          let s = scale
-          let o = offset
-          let b = blur
-          if (tokenRect.left < left) {
-            direction = -1
+          if (!moveVariablesSet) {
+            left = winingElement.offsetLeft;
+            l = left
+            t = winingElement.offsetHeight
+            s = scale
+            o = offset
+            b = blur
+            if (tokenRect.left < left) {
+              direction = -1
+            }
+            moveVariablesSet = true
           }
           let moveId = setInterval(() => {
-            if (left <= tokenRect.left) {
+            if (left >= tokenRect.left) {
               clearInterval(moveId)
               clearInterval(upId);
               clearInterval(pauseId);
