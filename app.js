@@ -152,6 +152,113 @@ function dimElement(element, callBack) {
   }
 }
 
+function cloneElementToViewPort(element, ) {
+  let clone = document.createElement('div');
+  let rect = element.getBoundingClientRect()
+  clone.id = 'clone'
+  clone.style.visibility = 'hidden'
+  clone.style.color = element.style.color
+  clone.style.margin = 'auto'
+  clone.style.textAlign = 'center'
+  clone.style.fontFamily = getComputedStyle(element).getPropertyValue('font-family') //element.style.fontFamily
+  clone.style.fontSize = getComputedStyle(element).getPropertyValue('font-size')
+  clone.style.paddingLeft = '10px'
+  clone.style.paddingRight = '10px'
+  clone.style.borderRadius = '23px'
+  clone.textContent = element.textContent
+  clone.style.display = 'inline-block'
+  clone.style.position = 'absolute'
+  clone.style.top = `${rect.top}px`
+  clone.style.left = `${rect.left}px`
+  clone.style.visibility = 'visible'
+  clone.style.zIndex = '1000'
+  clone.style.height = `${element.clientHeight}px`
+  clone.style.width = `${element.clientWidth}px`
+  document.body.appendChild(clone)
+
+  return clone
+}
+
+function interpolate(x1, x2, y1, y2, y) {
+  let x = (y - y1) * (x2 - x1) / (y2 - y1)
+  return Math.floor(x)
+}
+
+function createToken(player) {
+  let token = document.createElement('div');
+  token.classList.add('token')
+  // token.style.opacity = '0'
+  document.getElementById(`${player}-won-games`).appendChild(token)
+  return token
+}
+
+function drawWinner(player) {
+  let gameStatus = document.getElementById('game-status')
+  let winingElement = cloneElementToViewPort(gameStatus)
+  let token = createToken('computer')
+  let tokenRect = token.getBoundingClientRect()
+
+  gameStatus.style.color = 'rgb(0, 0, 0, 0)'
+
+  let scale = 0.95;
+  let blur = 1;
+  let offset = 1;
+  let pause = 0
+  let direction = 1
+
+  let top = winingElement.offsetTop;
+
+  let upId = setInterval(() => {
+    if (scale >= 2) {
+      let pauseId = setInterval(() => {
+        pause++
+        if (pause >= 1000) {
+          let left = winingElement.offsetLeft;
+          let l = left
+          let t = winingElement.offsetHeight
+          let s = scale
+          let o = offset
+          let b = blur
+          if (tokenRect.left < left) {
+            direction = -1
+          }
+          let moveId = setInterval(() => {
+            if (left <= tokenRect.left) {
+              clearInterval(moveId)
+              clearInterval(upId);
+              clearInterval(pauseId);
+              gameStatus.style.color = 'rgb(0, 0, 0, 1)'
+              gameStatus.innerText = 'Begin'
+              winingElement.remove()
+            } else {
+              left = left + direction
+              top = interpolate(t, token.offsetTop, l, tokenRect.left, left)
+              scale = interpolate(s, 0, l, tokenRect.left, left)
+              offset = interpolate(o, 0, l, tokenRect.left, left)
+              blur = interpolate(b, 0, l, tokenRect.left, left)
+              winingElement.style.left = `${left}`
+              winingElement.style.top = `${top}px`
+              winingElement.style.transform = `scale(${scale})`
+              winingElement.style.boxShadow = `${offset}px ${offset}px ${blur}px black`
+            }
+          }, 23)
+        }
+      }, 23)
+    } else {
+      top -= 3
+      scale += 0.05
+      blur = interpolate(1, 20, 1, 2, scale)
+      offset = interpolate(1, 10, 1, 2, scale)
+
+      // gameStatus.style.opacity = `${opacity}`
+      // gameStatus.style.transform = `scale(${opacity})`
+      winingElement.style.top = `${top}px`
+      winingElement.style.transform = `scale(${scale})`
+      winingElement.style.boxShadow = `${offset}px ${offset}px ${blur}px black`
+    }
+  }, 23)
+}
+
 function brightenElement(element, callBack) {
   let id = setInterval(frame, 10);
   let opacity = 0;
@@ -182,15 +289,6 @@ function drawComputerChoice(computerChoice) {
 
     brightenElement(computerImage, () => { })
   })
-
-  // computerImage.scr = ''
-
-
-
-
-
-
-
 }
 
 function drawChoices(humanChoice) {
